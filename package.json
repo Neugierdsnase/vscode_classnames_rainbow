@@ -24,7 +24,7 @@
       "type": "object",
       "title": "ClassNames Rainbow",
       "properties": {
-        "classnamesRainbow.colorbrightness": {
+        "classnamesRainbow.colorIntensity": {
           "type": "number",
           "default": 5,
           "description": "Set the brightness of the rainbow colors from 1 to 10.",
