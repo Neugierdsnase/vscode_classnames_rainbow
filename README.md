@@ -4,16 +4,17 @@ An extension targeted at users of atomic css libraries (like tailwind-css) to ma
 
 ## Features
 
-Does only one thing: Colors your class names dynamically with rainbow colors. 
+Does only one thing: Colors your class names dynamically with rainbow colors.
 
 Works with:
+
 - html
 - jsx
 - tsx
 - svelte
 - astro
 
-Please open an issue if you want/need other languages supported. 
+Please open an issue if you want/need other languages supported.
 
 ## Extension Settings
 
