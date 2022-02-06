@@ -1,15 +1,23 @@
 import * as assert from 'assert'
 import * as vscode from 'vscode'
-import * as myExtension from '../../extension';
-import { Utility } from '../../utility';
+import * as myExtension from '../../extension'
+import { Utility } from '../../utility'
 
 suite('Utility Test Suite', () => {
-  vscode.window.showInformationMessage('Start dynamicallyGenerateColor test suite')
+  vscode.window.showInformationMessage(
+    'Start dynamicallyGenerateColor test suite',
+  )
 
   test('generates colors correctly', () => {
     const utility = new Utility()
-    assert.strictEqual(utility.dynamicallyGenerateColor(1, 1), `hsl(20, 30%, 18%, 0.47)`)
-    assert.strictEqual(utility.dynamicallyGenerateColor(4, 7), `hsl(80, 60%, 36%, 0.59)`)
+    assert.strictEqual(
+      utility.dynamicallyGenerateColor(1, 1),
+      `hsl(20, 30%, 18%, 0.47)`,
+    )
+    assert.strictEqual(
+      utility.dynamicallyGenerateColor(4, 7),
+      `hsl(80, 60%, 36%, 0.59)`,
+    )
   })
 
   test('getsmallestValue', () => {
