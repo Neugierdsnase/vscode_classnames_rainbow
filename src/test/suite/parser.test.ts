@@ -32,7 +32,7 @@ suite('Parser Test Suite', () => {
     const htmlMatchLines = parser
       .findRelevantLines(activeHtmlDoc, /class=/g)
       .map(({ line }) => line)
-    assert.deepStrictEqual(htmlMatchLines, [9, 10, 11])
+    assert.deepStrictEqual(htmlMatchLines, [10, 12, 13])
 
     const tsxUri = vscode.Uri.file(
       path.join(__dirname, MOCK_DIRECTORY, 'mock.tsx'),
@@ -41,7 +41,7 @@ suite('Parser Test Suite', () => {
     const tsxMatchLines = parser
       .findRelevantLines(activeTsxDoc, /className=/g)
       .map(({ line }) => line)
-    assert.deepStrictEqual(tsxMatchLines, [10, 13, 16])
+    assert.deepStrictEqual(tsxMatchLines, [10, 15, 22])
   })
 
   test('findRelevantChars', async () => {
@@ -59,8 +59,8 @@ suite('Parser Test Suite', () => {
       /class=/g,
     )[0]
     const rangeFromFirstHtmlMatch = new vscode.Range(
+      new vscode.Position(htmlFirstMatchLine.line, 13),
       new vscode.Position(htmlFirstMatchLine.line, 14),
-      new vscode.Position(htmlFirstMatchLine.line, 15),
     )
     assert.deepStrictEqual(relevantHTMLChars, rangeFromFirstHtmlMatch)
 
