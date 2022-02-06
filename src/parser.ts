@@ -20,8 +20,10 @@ export class Parser {
         // substrings of other classes
         const classNameStart =
           classListStart +
-          ( classList.indexOf(`${className} `) || 
-          classList.indexOf(` ${className}`) + 1)
+          (classList.indexOf(` ${className}`) + 1 ||
+            classList.indexOf(`${className} `) || 
+            classList.indexOf(className)
+            )
         const classNameEnd = classNameStart + className.length
         return [classNameStart, classNameEnd]
       })

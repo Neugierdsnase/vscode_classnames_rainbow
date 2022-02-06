@@ -6,9 +6,7 @@ import { Highlighter } from './highlighter'
 import { Parser } from './parser'
 import { Utility } from './utility'
 
-const utility = new Utility()
-
-const classNamesLint = (activeDoc?: vscode.TextDocument) => {
+const classNamesLint = (utility: Utility, highlighter: Highlighter, activeDoc?: vscode.TextDocument) => {
   if (!activeDoc) {
     activeDoc = utility.getActiveDoc()
   }
@@ -23,31 +21,28 @@ const classNamesLint = (activeDoc?: vscode.TextDocument) => {
   if (!dialectMap.hasOwnProperty(originalLanguageId)) {
     return
   }
-  return new Highlighter(utility, new Parser(utility)).applyHighlights()
+  return highlighter.applyHighlights()
 }
 
-const classNamesLintCmd = () => {
-  classNamesLint()
+const handleDocOpen = (activeDoc: vscode.TextDocument, utility: Utility, highlighter: Highlighter) => {
+  classNamesLint(utility, highlighter, activeDoc)
 }
 
-const handleDocOpen = (activeDoc: vscode.TextDocument) => {
-  classNamesLint(activeDoc)
-}
-
-const handleEditorSwitch = (editor: vscode.TextEditor) => {
+const handleEditorSwitch = (editor: vscode.TextEditor, utility: Utility, highlighter: Highlighter) => {
   const activeDoc = utility.getActiveDoc(editor)
-  classNamesLint(activeDoc)
+  classNamesLint(utility, highlighter, activeDoc)
 }
 
-const handleDocEdit = (changeEvent: vscode.TextDocumentChangeEvent) => {
+const handleDocEdit = (changeEvent: vscode.TextDocumentChangeEvent, utility: Utility, highlighter: Highlighter) => {
   if (!changeEvent) {
     return
   }
-  let activeDoc = changeEvent.document
+  let activeDoc = utility.getActiveDoc()
   if (!activeDoc) {
     return
   }
-  classNamesLint(activeDoc)
+  highlighter.clearAllHighlights()
+  classNamesLint(utility, highlighter, activeDoc)
 }
 
 export function activate(context: vscode.ExtensionContext) {
@@ -56,24 +51,17 @@ export function activate(context: vscode.ExtensionContext) {
   console.log(
     'The classNames-rainbow"-extension is now active.',
   )
+  const utility = new Utility()
+  const highlighter = new Highlighter(utility, new Parser(utility))
 
-  // The command has been defined in the package.json file
-  // Now provide the implementation of the command with registerCommand
-  // The commandId parameter must match the command field in package.json
-  const lintCmd = vscode.commands.registerCommand(
-    'classNames-rainbow.lint',
-    classNamesLintCmd,
-  )
-
-  const docOpenEvent = vscode.workspace.onDidOpenTextDocument(handleDocOpen)
+  const docOpenEvent = vscode.workspace.onDidOpenTextDocument((activeDoc) => handleDocOpen(activeDoc, utility, highlighter))
   const switchEvent = vscode.window.onDidChangeActiveTextEditor(
-    (editor) => editor && handleEditorSwitch(editor),
+    (editor) => editor && handleEditorSwitch(editor, utility, highlighter),
   )
   const docEditEvent = vscode.workspace.onDidChangeTextDocument((event) =>
-    handleDocEdit(event),
+    handleDocEdit(event, utility, highlighter)
   )
 
-  context.subscriptions.push(lintCmd)
   context.subscriptions.push(docOpenEvent)
   context.subscriptions.push(docEditEvent)
   context.subscriptions.push(switchEvent)
@@ -82,7 +70,7 @@ export function activate(context: vscode.ExtensionContext) {
     // Need this because "onDidOpenTextDocument()" doesn't get called for the first open document.
     // Another issue is when dev debug logging mode is enabled, the first document would be "Log" because it is printing something and gets VSCode focus.
     const activeDoc = utility.getActiveDoc()
-    activeDoc && handleDocOpen(activeDoc)
+    activeDoc && handleDocOpen(activeDoc, utility, highlighter)
   }, 1000)
 }
 

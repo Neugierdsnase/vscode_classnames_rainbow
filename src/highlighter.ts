@@ -51,12 +51,24 @@ export class Highlighter {
     this.decorationsArray = decorations
   }
 
-  private clearExistingHiglights = () => {
+  private clearExistingHighlights = () => {
     this.classNameHighlights = []
   }
 
   private clearExistingDecorations = () => {
-    this.decorationsArray.map((decoration) => decoration.dispose())
+    this.decorationsArray.map((deco) => deco.dispose())
+    this.decorationsArray = [vscode.window.createTextEditorDecorationType({})]
+  }
+
+  clearAllHighlights = () => {
+    const editor = this.utility.getActiveEditor()
+    if (!editor) {
+      return
+    }
+    this.clearExistingHighlights()
+    this.clearExistingDecorations()
+    console.log('this.decorationsArray: ', this.decorationsArray)
+    editor.setDecorations(this.decorationsArray[0], this.classNameHighlights)
   }
 
   applyHighlights = () => {
@@ -64,16 +76,13 @@ export class Highlighter {
     if (!editor) {
       return
     }
-    this.clearExistingHiglights()
-    this.clearExistingDecorations()
     this.getHiglightsFromDoc()
     if (!this.classNameHighlights) {
       return
     }
     this.dynamicallyCreateDecorationTypes(this.classNameHighlights)
     this.decorationsArray.map((decoration, index) => {
-      console.log('decoration: ', decoration)
-      editor?.setDecorations(decoration, [this.classNameHighlights[index]])
+      editor.setDecorations(decoration, [this.classNameHighlights[index]])
     })
   }
 }
