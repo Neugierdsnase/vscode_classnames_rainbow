@@ -3,7 +3,22 @@ import { StringRangeIndices, MatchedLine } from './types'
 import { Utility } from './utility'
 
 export class Parser {
-  constructor(private readonly utility: Utility) {}
+  constructor(private readonly utility: Utility) { }
+
+  private findIndexOf = (text: string, searchString: string) => {
+    const index = text.indexOf(searchString)
+    return index === -1 ? undefined : index
+  }
+
+  private findIndexOfClassName = (text: string, searchString: string) => {
+    const firstTry = this.findIndexOf(text, ` ${searchString} `)
+    if (firstTry !== undefined) { return firstTry + 1 }
+    const secondTry = this.findIndexOf(text, `${searchString} `)
+    if (secondTry !== undefined) { return secondTry }
+    const thirdTry = this.findIndexOf(text, ` ${searchString}`)
+    if (thirdTry !== undefined) { return thirdTry + 1 }
+    return this.findIndexOf(text, searchString) || 0
+  }
 
   getIndividualClassNameIndices = (
     [classListStart]: StringRangeIndices,
@@ -16,14 +31,7 @@ export class Parser {
         if (className === '') {
           return undefined
         }
-        // This seems complicated, but is needed to only find actual classnames and not
-        // substrings of other classes
-        const classNameStart =
-          classListStart +
-          (classList.indexOf(` ${className}`) + 1 ||
-            classList.indexOf(`${className} `) || 
-            classList.indexOf(className)
-            )
+        const classNameStart = classListStart + this.findIndexOfClassName(classList, className)
         const classNameEnd = classNameStart + className.length
         return [classNameStart, classNameEnd]
       })
