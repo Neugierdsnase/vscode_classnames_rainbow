@@ -30,6 +30,13 @@
           "description": "Set the brightness of the rainbow colors from 1 to 10.",
           "minimum": 1,
           "maximum": 10
+        },
+        "classnamesRainbow.minimumClassListLength": {
+          "type": "number",
+          "default": 1,
+          "description": "Set the minimum length of the class list for the extension to take effect.",
+          "minimum": 1,
+          "maximum": 20
         }
       }
     },

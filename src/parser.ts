@@ -3,7 +3,7 @@ import { StringRangeIndices, MatchedLine } from './types'
 import { Utility } from './utility'
 
 export class Parser {
-  constructor(private readonly utility: Utility) { }
+  constructor(private readonly utility: Utility) {}
 
   private findIndexOf = (text: string, searchString: string) => {
     const index = text.indexOf(searchString)
@@ -12,11 +12,17 @@ export class Parser {
 
   private findIndexOfClassName = (text: string, searchString: string) => {
     const firstTry = this.findIndexOf(text, ` ${searchString} `)
-    if (firstTry !== undefined) { return firstTry + 1 }
+    if (firstTry !== undefined) {
+      return firstTry + 1
+    }
     const secondTry = this.findIndexOf(text, `${searchString} `)
-    if (secondTry !== undefined) { return secondTry }
+    if (secondTry !== undefined) {
+      return secondTry
+    }
     const thirdTry = this.findIndexOf(text, ` ${searchString}`)
-    if (thirdTry !== undefined) { return thirdTry + 1 }
+    if (thirdTry !== undefined) {
+      return thirdTry + 1
+    }
     return this.findIndexOf(text, searchString) || 0
   }
 
@@ -31,7 +37,8 @@ export class Parser {
         if (className === '') {
           return undefined
         }
-        const classNameStart = classListStart + this.findIndexOfClassName(classList, className)
+        const classNameStart =
+          classListStart + this.findIndexOfClassName(classList, className)
         const classNameEnd = classNameStart + className.length
         return [classNameStart, classNameEnd]
       })

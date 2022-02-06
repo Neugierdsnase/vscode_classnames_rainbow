@@ -6,7 +6,11 @@ import { Highlighter } from './highlighter'
 import { Parser } from './parser'
 import { Utility } from './utility'
 
-const classNamesLint = (utility: Utility, highlighter: Highlighter, activeDoc?: vscode.TextDocument) => {
+const classNamesLint = (
+  utility: Utility,
+  highlighter: Highlighter,
+  activeDoc?: vscode.TextDocument,
+) => {
   if (!activeDoc) {
     activeDoc = utility.getActiveDoc()
   }
@@ -24,16 +28,28 @@ const classNamesLint = (utility: Utility, highlighter: Highlighter, activeDoc?: 
   return highlighter.applyHighlights()
 }
 
-const handleDocOpen = (activeDoc: vscode.TextDocument, utility: Utility, highlighter: Highlighter) => {
+const handleDocOpen = (
+  activeDoc: vscode.TextDocument,
+  utility: Utility,
+  highlighter: Highlighter,
+) => {
   classNamesLint(utility, highlighter, activeDoc)
 }
 
-const handleEditorSwitch = (editor: vscode.TextEditor, utility: Utility, highlighter: Highlighter) => {
+const handleEditorSwitch = (
+  editor: vscode.TextEditor,
+  utility: Utility,
+  highlighter: Highlighter,
+) => {
   const activeDoc = utility.getActiveDoc(editor)
   classNamesLint(utility, highlighter, activeDoc)
 }
 
-const handleDocEdit = (changeEvent: vscode.TextDocumentChangeEvent, utility: Utility, highlighter: Highlighter) => {
+const handleDocEdit = (
+  changeEvent: vscode.TextDocumentChangeEvent,
+  utility: Utility,
+  highlighter: Highlighter,
+) => {
   if (!changeEvent) {
     return
   }
@@ -48,18 +64,18 @@ const handleDocEdit = (changeEvent: vscode.TextDocumentChangeEvent, utility: Uti
 export function activate(context: vscode.ExtensionContext) {
   // Use the console to output diagnostic information (console.log) and errors (console.error)
   // This line of code will only be executed once when your extension is activated
-  console.log(
-    'The classNames-rainbow"-extension is now active.',
-  )
+  console.log('The classNames-rainbow"-extension is now active.')
   const utility = new Utility()
   const highlighter = new Highlighter(utility, new Parser(utility))
 
-  const docOpenEvent = vscode.workspace.onDidOpenTextDocument((activeDoc) => handleDocOpen(activeDoc, utility, highlighter))
+  const docOpenEvent = vscode.workspace.onDidOpenTextDocument((activeDoc) =>
+    handleDocOpen(activeDoc, utility, highlighter),
+  )
   const switchEvent = vscode.window.onDidChangeActiveTextEditor(
     (editor) => editor && handleEditorSwitch(editor, utility, highlighter),
   )
   const docEditEvent = vscode.workspace.onDidChangeTextDocument((event) =>
-    handleDocEdit(event, utility, highlighter)
+    handleDocEdit(event, utility, highlighter),
   )
 
   context.subscriptions.push(docOpenEvent)

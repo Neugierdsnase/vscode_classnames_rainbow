@@ -26,8 +26,15 @@ export class Highlighter {
       let classNameHighlights: vscode.DocumentHighlight[] = []
       for (let line of lines) {
         const ranges = this.parser.findRelevantChars(line, classNameSyntaxId)
-        for (let range of ranges) {
-          classNameHighlights.push(new vscode.DocumentHighlight(range))
+        if (
+          ranges.length >=
+          (vscode.workspace
+            .getConfiguration('classnamesRainbow')
+            .get('minimumClassListLength') as number)
+        ) {
+          for (let range of ranges) {
+            classNameHighlights.push(new vscode.DocumentHighlight(range))
+          }
         }
       }
       this.classNameHighlights = classNameHighlights
