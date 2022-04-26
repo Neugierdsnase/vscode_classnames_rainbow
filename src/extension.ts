@@ -1,7 +1,6 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode'
-import { dialectMap } from './constants'
 import { Highlighter } from './highlighter'
 import { Parser } from './parser'
 import { Utility } from './utility'
@@ -19,10 +18,6 @@ const classNamesLint = (
   }
   const filePath = activeDoc.fileName
   if (!filePath) {
-    return
-  }
-  const originalLanguageId = activeDoc.languageId
-  if (!dialectMap.hasOwnProperty(originalLanguageId)) {
     return
   }
   return highlighter.applyHighlights()

@@ -1,5 +1,5 @@
 import * as vscode from 'vscode'
-import { dialectMap } from './constants'
+import { CLASSNAME_REGEX } from './constants'
 import { Parser } from './parser'
 import { Utility } from './utility'
 
@@ -18,26 +18,28 @@ export class Highlighter {
   private getHiglightsFromDoc = () => {
     const activeDoc = this.utility.getActiveDoc()
     if (!activeDoc) {
+      console.log('No active doc!')
       return
     }
     try {
-      const classNameSyntaxId = dialectMap[activeDoc.languageId]
-      const lines = this.parser.findRelevantLines(activeDoc, classNameSyntaxId)
-      let classNameHighlights: vscode.DocumentHighlight[] = []
-      for (let line of lines) {
-        const ranges = this.parser.findRelevantChars(line, classNameSyntaxId)
-        if (
-          ranges.length >=
-          (vscode.workspace
-            .getConfiguration('classnamesRainbow')
-            .get('minimumClassListLength') as number)
-        ) {
-          for (let range of ranges) {
-            classNameHighlights.push(new vscode.DocumentHighlight(range))
-          }
+      const ranges: vscode.Range[] = []
+      const text = activeDoc.getText()
+      let matches = text.matchAll(CLASSNAME_REGEX)
+
+      for (let match of matches) {
+        if (match.index) {
+          ranges.push(
+            new vscode.Range(
+              activeDoc.positionAt(match.index),
+              activeDoc.positionAt(match.index + match[0].length),
+            ),
+          )
         }
       }
-      this.classNameHighlights = classNameHighlights
+
+      this.classNameHighlights = ranges.map(
+        (range) => new vscode.DocumentHighlight(range),
+      )
     } catch (error) {
       console.error(error)
       return false
@@ -74,7 +76,6 @@ export class Highlighter {
     }
     this.clearExistingHighlights()
     this.clearExistingDecorations()
-    console.log('this.decorationsArray: ', this.decorationsArray)
     editor.setDecorations(this.decorationsArray[0], this.classNameHighlights)
   }
 
