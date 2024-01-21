@@ -3,7 +3,7 @@
   "displayName": "ClassNames Rainbow",
   "description": "Gives rainbow colors to html class names to help distinguish them. Works with jsx, tsx etc.",
   "author": "Konstantin Kovar <mail@vomkonstant.in>",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "MIT",
   "repository": "https://github.com/Neugierdsnase/vscode_classnames_rainbow",
   "icon": "classnames-rainbow-logo.png",
